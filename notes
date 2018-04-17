@@ -1,0 +1,22 @@
+db: Comments
+
+Comments: Users {
+                    username: ,
+                    password: ,
+                    admin:  
+                }
+Comments: posts {
+                id: ,
+                time: ,
+                content: ,
+                }
+
+db.posts.createIndex({content:"text"},{default_language:"none"})
+
+post(\cmt) params: content
+
+delete(\cmt) params: id
+patch(\cmt) params: id content
+
+get(\cmt) params: p(page) q(word to find) return {posts:[]}
+post(\login) params: pass, user
