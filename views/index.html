@@ -1,91 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.3.1/css/foundation.min.css"> -->
 <link rel="stylesheet" href='/stylesheets/style.css'>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 <script src="https://unpkg.com/axios/dist/axios.min.js")></script>  
 <!-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> -->
-
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta charset="utf-8">
 <title>Public Message Board</title>
 </head>
   <body>
-      <div class="container" id="Login">
-         <!-- Log in Box -->
-          <div v-if="not_yet_logged_in">
-              <div class="columns medium-4">
-                  <div class="card">
-                      <div class="card-section">
-                          <input v-model="username">
+    <div class="container" id="Posts">
+        <div class="container">
+            <div class="row">
+                  <div class="col-md-4 ">
+                      <!-- Log in Box -->
+                      <div v-if="not_yet_logged_in">
+                              <div class="form-group">
+                                  <label for="usr">Username:</label>
+                                  <input v-model="username">
+                              </div>
+                              <div class="form-group">
+                                  <label for="pwd">Password:</label>
+                                  <input type="password" v-model="password">
+                                  <button v-on:click="login" class="btn btn-primary">login</button>
+                              </div>
                       </div>
-                      <div class="card-divider">
-                        <input type="password" v-model="password">
-                        <button v-on:click="login">login</button>
+                      <!-- Log out button -->
+                      <div v-else>
+                          <div class="panel panel-primary">
+                              <div class="panel-heading">
+                                      <h2 v-if= "isAdmin">Welcome Admin</h2>
+                                      <h2 v-else>Welcome User</h2>
+                              </div>
+                              <div class="panel-body">
+                                      <button v-on:click="logout" class="btn btn-info">Log out</button>
+                              </div>
+                          </div>
                       </div>
-    
-                    </div>
-              </div>
-          </div>
-          <!-- Log out button -->
-          <div v-else>
-              <div class="columns medium-4">
-                  <div class="card">
-                      <div class="card-divider">
-                        <p v-if= "isAdmin">Welcome Admin</p>
-                        <p v-else>Welcome User</p>
-                        <button v-on:click="logout">Log out</button>
-                      </div>
-    
-                    </div>
-              </div>
-          </div>
-      </div>
-      <!-- Post Section -->
-      <div class="container" id="Posts">
-          <h3 class="text-center">Public Message Board</h3>
-          <div class="columns medium-4" v-for="post in posts">
-              <div class="card">
-                <div class="card-section">
-                  <p> {{ post.time }} </p>
-                </div>
-                <div class="card-divider">
-                  <p>{{ post.content }}</p>
-                </div>
-                <div class="card-section">
-                    <button v-on:click="delete_post(post._id)">Delete</button>
-                    <input v-model="modified_message">
-                    <button v-on:click="update_post(post._id)">Update</button>
-                </div>
-              </div>
-          </div>
-          <!-- New Post Area -->
-          <div class="columns medium-4">
-              <div class="card">
-                  <div class="card-section">
-                      <p> New Post </p>
                   </div>
-                  <div class="card-divider">
-                    <input v-model="message">
-                    <button v-on:click="submit_new_post">Submit</button>
-                  </div>
-
-                </div>
-          </div>
-          <!-- Search Area -->
-          <div class="columns medium-4">
-                <div class="card">
-                    <p> Search </p>
-                    <div class="card-divider">
+                  <div class="col-md-3 offset-md-5">
+                      <p> Search</p>
                       <input v-model="q">
+                  </div>
+                  
+            </div>
+        </div>
+        <!-- Post Section -->
+        <div class="container">
+            <h3 class="text-center">Public Message Board</h3>
+            <div class= "row">
+                <div class="col-sm-4" v-for="post in posts">
+                      <div class="col-md-12 post top-buffer">
+                          <div class="card-section">
+                              <p> {{ post.time }} </p>
+                          </div>
+                          <div >
+                              <p>{{ post.content }}</p>
+                          </div>
+                          <div class= "admin-part" v-if="isAdmin">
+                              <div class= "row">
+                                  <div class="col-sm-2 align-self-end">
+                                          <button class="btn btn-danger" v-on:click="delete_post(post._id)">Delete</button>
+                                  </div>
+                              </div>
+                              <div class= "row">
+                                  <div class="col-sm-8">
+                                          <input v-model="modified_message">
+                                  </div>
+                                  <div class="col-sm-2">
+                                      <button v-on:click="update_post(post._id)" class="btn btn-warning">Update</button>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                </div>
+            </div>
+            <!-- New Post Area -->
+            <div class="container">
+                <div class= "row">
+                    <div class="col-md-12 post top-buffer">
+                        <div class= "row">
+                            <div class="col-md-3">
+                                <h1> New Post </h1>
+                            </div>
+                            <div class="col-md-5 offset-md-2">
+                                <input v-model="message" id="msg" type="text" class="form-control" name="msg" placeholder="message">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-primary" v-on:click="submit_new_post">Submit</button>
+                            </div>
+                        </div>
                     </div>
-  
                   </div>
             </div>
-      </div>
-
-
-      </div>
-
+        </div>
+    </div>
     <script src="https://unpkg.com/vue"></script>
     <script src="../javascripts/index.js")></script>
   </body>

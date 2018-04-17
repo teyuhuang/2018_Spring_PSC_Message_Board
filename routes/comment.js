@@ -55,7 +55,6 @@ router.patch('/', function(req, res, next) {  //[Auth Required] update or modify
             db.collection('posts').updateOne( { "_id" : new ObjectID(req.body.id) } ,
             { $set: {content: req.body.content}},
                                         function(err, r) {   
-                console.log(err,r)
                 if(r.result.ok) 
                     res.send("ok");
                 else
@@ -73,7 +72,6 @@ router.get('/', function(req, res, next) {    //load
     let query = {}
     let num_of_posts_a_page = 20;
     if (!isNaN(req.query.p)){
-        console.log(req.params.p)
         let tmp = parseInt(req.query.p)
         if(tmp > 0)
         page = tmp;

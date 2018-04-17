@@ -6,9 +6,13 @@ body {
 a {
   color: #00B7FF;
 }
-.card:hover .card-section{
-  display: inline;
+.post{
+  background: lightgray;
 }
-.card .card-section{
-  display: none;
+.top-buffer { margin-top:20px; }
+.post:hover .admin-part{
+  visibility:visible;
+}
+.post .admin-part{
+  visibility:hidden;
 }

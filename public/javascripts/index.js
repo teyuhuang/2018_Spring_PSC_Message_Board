@@ -7,7 +7,11 @@ const vm = new Vue({
       message:  "",
       modified_message: "",
       p:0,
-      q:""
+      q:"",
+      not_yet_logged_in: true,
+        username: "",
+        password: "",  
+        isAdmin: false,
     },
     watch:{
         q:function(){
@@ -21,7 +25,16 @@ const vm = new Vue({
         axios.get(url)
         .then(response => {
           this.posts = response.data.posts;
-        })
+        });
+        axios.post("login")
+        .then(response => {
+            switch(response.data){
+                case "admin": 
+                this.isAdmin=true; 
+                case "ok": 
+                this.not_yet_logged_in= false;
+            }
+        });
       },
     methods: {
         submit_new_post: function () {
@@ -60,29 +73,6 @@ const vm = new Vue({
                 }
             });
         },
-    }
-});
-
-const login = new Vue({
-    el: '#Login',
-    data: {
-        not_yet_logged_in: true,
-        username: "",
-        password: "",
-        isAdmin: false,
-    },
-    mounted() {
-        axios.post("login")
-        .then(response => {
-            switch(response.data){
-                case "admin": 
-                this.isAdmin=true; 
-                case "ok": 
-                this.not_yet_logged_in= false;
-            }
-        });
-    },
-    methods: {
         login: function () {
             axios.post("login",{user:this.username,
             pass:this.password})
@@ -111,4 +101,4 @@ const login = new Vue({
             });
         }
     }
-    });
+});
