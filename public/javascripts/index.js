@@ -1,13 +1,16 @@
 const url = "cmt"
+let refresh_page = ()=>{
 
+}
 const vm = new Vue({
     el: '#Posts',
     data: {
       posts: [],
-      message:  "",
+      message:"",
       modified_message: "",
       p:0,
       q:"",
+      page_info:{},
       not_yet_logged_in: true,
         username: "",
         password: "",  
@@ -15,17 +18,12 @@ const vm = new Vue({
     },
     watch:{
         q:function(){
-            axios.get(url,{params:{"q":this.q}})
-            .then(response => {
-            this.posts = response.data.posts;
-            });
+            this.refresh_page();
         }
     },
     mounted() {
-        axios.get(url)
-        .then(response => {
-          this.posts = response.data.posts;
-        });
+        this.refresh_page();
+        // this.refresh_page();
         axios.post("login")
         .then(response => {
             switch(response.data){
@@ -37,15 +35,32 @@ const vm = new Vue({
         });
       },
     methods: {
-        submit_new_post: function () {
+        refresh_page:function(cb){
+            axios.get(url,{params:{"q":this.q,"p":this.p}})
+            .then(response => {
+                this.posts = response.data.posts;
+                this.page_info = response.data.page;
+                if(cb)
+                cb();
+            });
+        },
+        change_page: function(p){
+            if (p>0)
+                this.p = p-1;
+            this.refresh_page();
+        },
+        r_pq: function(){
+            this.p=0;
+            this.q="";
+        },
+        submit_new_post: function(){
             axios.post(url,{content:this.message})
             .then(response => {
                 if(response.data=="ok"){
-                    axios.get(url)
-                    .then(response => {
-                    this.posts = response.data.posts;
-                    this.message = "";
-                    })
+                    this.r_pq();
+                    this.refresh_page(()=>{
+                        this.message = "";
+                    });
                 }
             });
         },
@@ -53,11 +68,8 @@ const vm = new Vue({
             axios.delete(url,{params:{"id":id}})
             .then(response => {
                 if(response.data=="ok"){
-                    axios.get(url)
-                    .then(response => {
-                    this.posts = response.data.posts;
-                    this.message = "";
-                    })
+                    this.r_pq();
+                    this.refresh_page();
                 }
             });
         },
@@ -65,11 +77,8 @@ const vm = new Vue({
             axios.patch(url,{id:id,content:this.modified_message})
             .then(response => {
                 if(response.data=="ok"){
-                    axios.get(url)
-                    .then(response => {
-                    this.posts = response.data.posts;
                     this.modified_message = "";
-                    })
+                    this.refresh_page();
                 }
             });
         },

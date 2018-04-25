@@ -95,6 +95,26 @@
                     </div>
                   </div>
             </div>
+            <!-- Pagination -->
+            <div class = "container">
+                <div class= "row top-buffer">
+                    <div class="col-md-12 top-buffer">
+                            <nav aria-label="...">
+                                <ul class="pagination">
+                                    <div v-for="p in page_info.range">
+                                            <li class="page-item active" v-if="page_info.current === p">
+                                                <a class="page-link" href="#" v-on:click="change_page(p)">{{p}}</a>
+                                            </li>
+                                            <li class="page-item" v-else>
+                                                    <a class="page-link" href="#" v-on:click="change_page(p)">{{p}}</a>
+                                            </li>
+                                    </div>
+                                    
+                                </ul>
+                            </nav>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <script src="https://unpkg.com/vue"></script>
