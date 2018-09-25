@@ -25,7 +25,6 @@ router.post('/login',function(req,res,next){
           {$and:[{"username":req.body.user},
                             {"pwd":hash}]},
                       function(err, r) {    
-          // console.log(r);
           if(r!=null){
             req.session.login = true;
             if(r.admin){

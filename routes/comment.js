@@ -79,7 +79,6 @@ router.get('/', function(req, res, next) {    //load
         page = tmp;
     }
     if (req.query.q!=undefined&&req.query.q.length>0){
-        //TO-DOs: escape
         query = {$text: { $search: req.query.q ,$language:"none"}};
     }
 
